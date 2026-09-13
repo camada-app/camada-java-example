@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import dev.camada.Camada;
 import java.io.IOException;
@@ -176,10 +175,9 @@ class ServerTest {
   @Test
   void pomRecordsTheSiblingSdkVersion() throws IOException {
     Path sdkPom = Paths.get("..", "camada-java", "pom.xml");
-    if (!Files.exists(sdkPom)) {
-      fail(
-          "no camada-java checkout beside this repo (" + sdkPom.toAbsolutePath().normalize() + ")");
-    }
+    assertTrue(
+        Files.exists(sdkPom),
+        "no camada-java checkout beside this repo (" + sdkPom.toAbsolutePath().normalize() + ")");
     Matcher shipped =
         Pattern.compile("<artifactId>camada</artifactId>\\s*<version>([^<]+)</version>")
             .matcher(Files.readString(sdkPom, StandardCharsets.UTF_8));
