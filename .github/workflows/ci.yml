@@ -7,14 +7,19 @@ jobs:
       matrix:
         java: ["17", "21", "25"]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with: { path: camada-java-example }
       # dev.camada:camada is not on Maven Central: the sibling checkout is installed into the local
       # repository first (the SDK vendors its own beacon build, so no camada-browser here).
-      - uses: actions/checkout@v4
-        with: { repository: ${{ github.repository_owner }}/camada-java, path: camada-java }
+      - uses: actions/checkout@v7
+        with:
+          repository: ${{ github.repository_owner }}/camada-java
+          path: camada-java
       - uses: actions/setup-java@v4
-        with: { distribution: temurin, java-version: "${{ matrix.java }}", cache: maven }
+        with:
+          distribution: temurin
+          java-version: "${{ matrix.java }}"
+          cache: maven
       - run: mvn -q install -DskipTests
         working-directory: camada-java
       - run: mvn -q verify
