@@ -10,8 +10,9 @@ This is the hand-test bench for the Java SDK, the twin of
    `npm run seed` in a second terminal. Note the printed `CAMADA_KEY`.
 2. Here: `cp .env.example .env` (paste the key if it differs), then
    `mvn -q -f ../camada-java/pom.xml install -DskipTests` once — Maven has no path dependencies,
-   so the sibling checkout is installed into your local repository as `dev.camada:camada:0.1.0`
-   (re-run it after changing the SDK) — and `mvn spring-boot:run` → http://localhost:3006.
+   so the sibling checkout is installed into your local repository as `dev.camada:camada` at the
+   version `pom.xml`'s `camada.version` property pins (re-run it after changing the SDK) — and
+   `mvn spring-boot:run` → http://localhost:3006.
    Or build the jar: `mvn -q -DskipTests package && java -jar target/camada-java-example.jar`.
 
 `server.forward-headers-strategy` must stay `none` (Spring Boot's default off cloud platforms;
@@ -96,5 +97,7 @@ private window — to see the check again.
 
 `mvn -q verify` (after the SDK `install` above) — `spotless:check`, `-Werror`, then the routes on
 a real Tomcat (`@SpringBootTest`, random port) against an engine whose analyst URL is a closed
-port (cold, fail open; the challenge needs no snapshot), plus a guard that `pom.xml` pins the
-sibling SDK's current version (bump `camada.version` after bumping `camada-java`).
+port (cold, fail open; the challenge needs no snapshot), plus a guard that `pom.xml`'s
+`camada.version` is the one place the SDK version lives: it must match the sibling checkout and the
+`dev.camada.Version.VERSION` on the classpath, and the README may not repeat the literal (bump
+`camada.version` after bumping `camada-java`, nothing else).
