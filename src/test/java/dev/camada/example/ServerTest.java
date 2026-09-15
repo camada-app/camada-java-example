@@ -168,6 +168,15 @@ class ServerTest {
     assertNotNull(header(r, "x-rid"));
   }
 
+  /** The one place this repo names the SDK version: pom.xml's {@code camada.version} property. */
+  static String pinnedSdkVersion() throws IOException {
+    Matcher pinned =
+        Pattern.compile("<camada.version>([^<]+)</camada.version>")
+            .matcher(Files.readString(Paths.get("pom.xml"), StandardCharsets.UTF_8));
+    assertTrue(pinned.find(), "pom.xml has no camada.version property");
+    return pinned.group(1);
+  }
+
   /**
    * pom.xml pins dev.camada:camada the way uv.lock pins a path dependency: the number must be the
    * sibling checkout's current version, or the example runs an SDK the repo no longer describes.
@@ -182,11 +191,35 @@ class ServerTest {
         Pattern.compile("<artifactId>camada</artifactId>\\s*<version>([^<]+)</version>")
             .matcher(Files.readString(sdkPom, StandardCharsets.UTF_8));
     assertTrue(shipped.find());
-    Matcher pinned =
-        Pattern.compile("<camada.version>([^<]+)</camada.version>")
-            .matcher(Files.readString(Paths.get("pom.xml"), StandardCharsets.UTF_8));
-    assertTrue(pinned.find());
     assertEquals(
-        shipped.group(1), pinned.group(1), "pom.xml is behind camada-java: bump camada.version");
+        shipped.group(1), pinnedSdkVersion(), "pom.xml is behind camada-java: bump camada.version");
+  }
+
+  /**
+   * The SDK on the classpath is the one pom.xml pins: its published version constant (the wire
+   * identity {@code x-camada-sdk: @camada/java/<version>}) must be the property's value, or the
+   * local repository holds a stale install (re-run {@code mvn -f ../camada-java/pom.xml install}).
+   */
+  @Test
+  void theSdkOnTheClasspathIsThePinnedVersion() throws IOException {
+    assertEquals(
+        pinnedSdkVersion(),
+        dev.camada.Version.VERSION,
+        "the installed dev.camada:camada is not the version pom.xml pins");
+  }
+
+  /**
+   * A bump is one edit: the README points at the property instead of repeating the number, so no
+   * literal SDK version may appear there.
+   */
+  @Test
+  void theReadmeDoesNotRepeatTheSdkVersion() throws IOException {
+    String readme = Files.readString(Paths.get("README.md"), StandardCharsets.UTF_8);
+    assertFalse(
+        readme.contains("dev.camada:camada:"),
+        "README.md hardcodes the SDK version: point at pom.xml's camada.version instead");
+    assertFalse(
+        readme.contains(pinnedSdkVersion()),
+        "README.md repeats the SDK version literal " + pinnedSdkVersion());
   }
 }
