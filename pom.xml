@@ -30,7 +30,7 @@
     <!-- Maven has no path dependencies: `mvn -q -f ../camada-java/pom.xml install -DskipTests` puts the
          sibling checkout into the local repository first (README, CI, and the e2e's prepare step).
          ServerTest guards that this number is the sibling's current version. -->
-    <camada.version>0.1.0</camada.version>
+    <camada.version>0.1.1</camada.version>
   </properties>
 
   <dependencies>
