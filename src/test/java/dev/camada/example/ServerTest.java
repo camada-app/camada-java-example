@@ -154,10 +154,11 @@ class ServerTest {
   }
 
   @Test
-  void challengeMeAnswersJsonToAnApiClient() {
+  void challengeMeSignalsAnApiClient() {
     ResponseEntity<String> r = get("/challenge-me", "x-forwarded-for", "198.51.100.7");
-    assertEquals(403, r.getStatusCode().value());
-    assertEquals("{\"error\":\"challenge_required\"}", r.getBody());
+    assertEquals(200, r.getStatusCode().value());
+    assertEquals("1", header(r, "x-camada-challenge"));
+    assertEquals("no-store", header(r, "cache-control"));
   }
 
   @Test
