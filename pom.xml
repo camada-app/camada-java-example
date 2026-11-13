@@ -17,6 +17,7 @@
 
   <name>camada-java-example</name>
   <description>A Spring Boot app wired with camada against a local edge-analyst: the hand-test bench for the Java SDK.</description>
+  <url>https://www.camada.app/docs/quickstart/spring</url>
   <licenses>
     <license>
       <name>MIT</name>
