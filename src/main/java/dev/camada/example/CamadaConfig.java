@@ -23,6 +23,8 @@ class CamadaConfig {
       List.of(
           "CAMADA_KEY",
           "CAMADA_TOKEN",
+          "CAMADA_TOKEN_HASH",
+          "CAMADA_TOKEN_HEADER",
           "CAMADA_SNAPSHOT_TOKEN",
           "CAMADA_INGEST_URL",
           "CAMADA_SNAPSHOT_URL",
